@@ -1,3 +1,7 @@
+export const metadata = {
+  title: "Mathler",
+};
+
 export default function RootLayout({
   children,
 }: {

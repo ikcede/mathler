@@ -19,3 +19,6 @@ For a quick set up, I ran:
 npx create-next-app@latest --example with-jest with-jest-app
 ```
 
+## Design
+
+For design decisions, check out the `/design` folder.

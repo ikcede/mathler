@@ -8,6 +8,7 @@
 
   --color-grey-800: #3A3A3C;
   --color-grey-700: #727274;
+  --color-grey-hover: #4F4F51;
 
   --color-correct: var(--color-green);
   --color-present: var(--color-yellow);
@@ -25,8 +26,16 @@ html,
 body {
   padding: 0;
   margin: 0;
+
+  background: var(--color-background);
+  color: var(--color-text-default);
+  font-size: 16px;
 }
 
 * {
   box-sizing: border-box;
+}
+
+button {
+  font-family: var(--font-roboto);
 }

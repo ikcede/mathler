@@ -1,4 +1,11 @@
+import { Roboto } from "next/font/google";
 import '@/styles/globals.css';
+
+const roboto = Roboto({ 
+  subsets: ['latin'],
+  variable: '--font-roboto',
+  weight: ['300', '400', '500', '700']
+});
 
 export const metadata = {
   title: "Mathler",
@@ -11,7 +18,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className={roboto.className}>
+        {children}
+      </body>
     </html>
   );
 }

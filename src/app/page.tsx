@@ -1,3 +1,14 @@
+import Game from "@/components/mathler/game/Game";
+
 export default function Page() {
-  return <h1>App Router</h1>;
+  return (
+    <>
+      <header>
+        <h1>Mathler</h1>
+      </header>
+      <main>
+        <Game></Game>
+      </main>
+    </>
+  )
 }

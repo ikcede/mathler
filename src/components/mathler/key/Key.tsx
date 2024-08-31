@@ -4,8 +4,13 @@ import styling from './Key.module.css';
 type KeyPressedFunction = (key: string) => void;
 
 export interface KeyProps {
+  /** String value that this key represents */
   keyText: string,
+
+  /** Whether the value is absent from the current Mathler solution */
   absent?: boolean,
+
+  /** Called when the key is clicked */
   onKeyPressed?: KeyPressedFunction
 }
 

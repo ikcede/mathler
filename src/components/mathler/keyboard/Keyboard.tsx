@@ -5,7 +5,10 @@ import styling from './Keyboard.module.css';
 type KeyInputFunction = (key: string) => void;
 
 export interface KeyboardProps {
+  /** An array of keys to be rendered row by row */
   keyboard: string[][],
+
+  /** Called when one of the inner keys is pressed */
   onKeyInput?: KeyInputFunction
 }
 

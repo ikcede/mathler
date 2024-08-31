@@ -1,0 +1,26 @@
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: var(--border);
+  font-size: 20px;
+  font-weight: medium;
+}
+
+.tile.default {
+  background: transparent;
+}
+
+.tile.correct {
+  background: var(--color-correct);
+}
+
+.tile.present {
+  background: var(--color-present);
+}
+
+.tile.absent {
+  background: var(--color-absent);
+}

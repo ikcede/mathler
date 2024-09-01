@@ -1,13 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import Keyboard, { KeyboardProps } from './Keyboard';
 import styling from './Keyboard.module.css';
+import { DisplayState } from "../util/constants";
 
-let keyboardProps: KeyboardProps = {
-  keyboard: [['0'], ['Enter']],
-  onKeyInput: jest.fn(),
-};
+let keyboardProps: KeyboardProps;
 
-describe(Keyboard, () => {
+describe('Keyboard', () => {
   beforeEach(() => {
     keyboardProps = {
       keyboard: [['0'], ['Enter']],
@@ -23,6 +21,23 @@ describe(Keyboard, () => {
     
     expect(keys[0]).toHaveTextContent('0');
     expect(keys[1]).toHaveTextContent('Enter');
+
+    expect(keys[0]).toHaveClass(styling[DisplayState.DEFAULT]);
+    expect(keys[1]).toHaveClass(styling[DisplayState.DEFAULT]);
+  });
+
+  it('renders keys with different states', () => {
+    let displayMap = new Map<string, DisplayState>();
+    displayMap.set('0', DisplayState.CORRECT);
+    keyboardProps.keyStates = displayMap;
+
+    render(<Keyboard {...keyboardProps} />);
+
+    let keys = screen.getAllByRole('button');
+    expect(keys).toHaveLength(2);
+    
+    expect(keys[0]).toHaveClass(styling[DisplayState.CORRECT]);
+    expect(keys[1]).toHaveClass(styling[DisplayState.DEFAULT]);
   });
 
   it('sends a keyinput event', () => {

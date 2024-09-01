@@ -1,16 +1,16 @@
 import React from 'react';
 import styling from './Tile.module.css';
+import { DisplayState } from '../util/constants';
 
 export interface TileProps {
   text?: string,
-
-  // TODO: Make this an enum?
-  status?: 'default' | 'absent' | 'correct' | 'present';
+  status?: DisplayState;
 }
 
+/** View component for rendering a tile */
 const Tile: React.FC<TileProps> = ({
-  status = 'default',
   text = '',
+  status = DisplayState.DEFAULT,
 }) => {
   return (
     <div className={`${styling.tile} ${styling[status]}`}>
@@ -19,4 +19,4 @@ const Tile: React.FC<TileProps> = ({
   )
 }
 
-export default Tile
+export default React.memo(Tile)

@@ -1,5 +1,7 @@
 .tiles {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
+
+  margin: 16px 0;
 }

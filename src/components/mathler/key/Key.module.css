@@ -23,3 +23,11 @@
 .absent {
   background: var(--color-absent);
 }
+
+.correct {
+  background: var(--color-correct);
+}
+
+.present {
+  background: var(--color-present);
+}

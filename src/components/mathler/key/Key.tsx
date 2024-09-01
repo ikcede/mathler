@@ -1,4 +1,5 @@
 import React from 'react';
+import { DisplayState } from '../util/constants';
 import styling from './Key.module.css';
 
 type KeyPressedFunction = (key: string) => void;
@@ -8,28 +9,24 @@ export interface KeyProps {
   keyText: string,
 
   /** Whether the value is absent from the current Mathler solution */
-  absent?: boolean,
+  display?: DisplayState,
 
   /** Called when the key is clicked */
   onKeyPressed?: KeyPressedFunction
 }
 
+/** View component for rendering a single key */
 const Key: React.FC<KeyProps> = ({
   keyText,
-  absent = false,
+  display = DisplayState.DEFAULT,
   onKeyPressed = () => {}
 }) => {
-  let keyClasses = styling.key;
-  if (absent) {
-    keyClasses += ' ' + styling.absent;
-  }
-
   return (
-    <button className={keyClasses}
+    <button className={styling.key + ' ' + styling[display]}
             onClick={() => onKeyPressed(keyText)}>
       {keyText}
     </button>
   )
 }
 
-export default Key
+export default React.memo(Key)

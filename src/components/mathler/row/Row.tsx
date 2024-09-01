@@ -1,52 +1,34 @@
 import React from 'react';
 import styling from './Row.module.css';
 import Tile from '@/components/mathler/tile/Tile';
+import { DisplayState } from '../util/constants';
 
 export interface RowProps {
+  /** Number of tiles in the row */
   tiles: number,
+
+  /** Value of each tile, to be mapped by index of the character */
   value: string,
-  solution: string,
-  submitted?: boolean,
+
+  /** The display states of each tile by index */
+  displayStates?: DisplayState[],
 }
 
+/** View component for rendering a row of Tiles */
 const Row: React.FC<RowProps> = ({
   tiles,
   value,
-  solution,
-  submitted,
+  displayStates = new Array<DisplayState>(),
 }) => {
-
-  /** Builds a set of all the chars in the solution */
-  const presentKeys = React.useMemo(() => {
-    return new Set<string>(value.split(''));
-  }, [value]);
-
-  /** Determine the status of a tile */
-  const getTileStatus = React.useCallback((index: number): 'default' | 'absent' | 'correct' | 'present' => {
-    if (!submitted) {
-      return 'default';
-    }
-
-    if (value[index] !== undefined && value[index] === solution[index]) {
-      return 'correct';
-    }
-
-    if (value[index] !== undefined && presentKeys.has(value[index])) {
-      return 'present';
-    }
-
-    return 'absent';
-  }, [value, solution, submitted]);
-
   return (
     <div className={styling.row}>
       {Array.from({length: tiles}).map((_item, index) => (
         <Tile key={index}
               text={value[index]}
-              status={getTileStatus(index)} />
+              status={displayStates[index]} />
       ))}
     </div>
   )
 }
 
-export default Row
+export default React.memo(Row)

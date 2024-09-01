@@ -13,6 +13,41 @@ const Game: React.FC = () => {
 
   const tilesPerRow = game.solution.length;
 
+  const solutionKeyCount = React.useMemo((): {[key: string]: number} => {
+    let keyCountMap: {[key: string]: number} = {};
+    for (let i = 0; i < game.solution.length; i++) {
+      if (keyCountMap[game.solution[i]] !== undefined) {
+        keyCountMap[game.solution[i]]++;
+      } else {
+        keyCountMap[game.solution[i]] = 1;
+      }
+    }
+    return keyCountMap;
+  }, [game.solution]);
+
+  const keyStates = React.useMemo((): Map<string, DisplayState> => {
+    let keyStateMap = new Map<string, DisplayState>();
+    let keySet = new Set<string>(game.solution.split(''));
+
+    for (let i = 0; i < game.guesses.length; i++) {
+      let guess = game.guesses[i];
+      
+      for (let j = 0; j < guess.length; j++) {
+        if (guess[j] === game.solution[j]) {
+          keyStateMap.set(guess[j], DisplayState.CORRECT);
+        } else if (keySet.has(guess[j])) {
+          if (keyStateMap.get(guess[j]) !== DisplayState.CORRECT) {
+            keyStateMap.set(guess[j], DisplayState.PRESENT)
+          }
+        } else {
+          keyStateMap.set(guess[j], DisplayState.ABSENT);
+        }
+      }
+    }
+
+    return keyStateMap;
+  }, [game]);
+
   const validateGuess = React.useCallback(() => {
     let validation = Mathler.validate(activeGuess, game.target);
     console.log(validation);
@@ -55,26 +90,38 @@ const Game: React.FC = () => {
     let solution = game.solution;
     let displayStates = new Array<DisplayState>(solution.length)
         .fill(DisplayState.DEFAULT);
+    let keyCounts = {...solutionKeyCount};
     
     if (index >= game.guesses.length) {
       return displayStates;
     }
 
     let guess = game.guesses[index];
+
+    // Loop twice, first to check for corrects and then presents
     for (let i = 0; i < solution.length; i++) {
       if (guess[i] === solution[i]) {
         displayStates[i] = DisplayState.CORRECT;
-      } else if (solution.indexOf(guess[i]) > -1) {
-        displayStates[i] = DisplayState.PRESENT;
-      } else {
-        displayStates[i] = DisplayState.ABSENT;
+        keyCounts[guess[i]]--;
+      }
+    }
+
+    for (let i = 0; i < solution.length; i++) {
+      if (displayStates[i] !== DisplayState.CORRECT) {
+        if (keyCounts[guess[i]] !== undefined &&
+            keyCounts[guess[i]] > 0) {
+          keyCounts[guess[i]]--;
+          displayStates[i] = DisplayState.PRESENT;
+        } else {
+          displayStates[i] = DisplayState.ABSENT;
+        }
       }
     }
     return displayStates;
   }, [game.guesses, game.solution]);
 
   return (
-    <div>
+    <>
       <div className={styling.tiles}>
         {Array.from({length: game.maxGuesses}).map((_item, index) => (
           <Row key={index}
@@ -84,8 +131,9 @@ const Game: React.FC = () => {
         ))}
       </div>
       <Keyboard keyboard={keyboard}
+                keyStates={keyStates}
                 onKeyInput={onKeyInput} />
-    </div>
+    </>
   )
 }
 

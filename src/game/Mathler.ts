@@ -1,14 +1,15 @@
 import GameState from './GameState';
+import * as validation from './util/validation';
 
+/** Standalone Mathler game engine */
 namespace Mathler {
+  // Declare imported util
+  export type GuessValidation = validation.GuessValidation;
+  export import GuessError = validation.GuessError;
+
   export const operators = new Set<string>([
     '+', '-', '*', '/'
   ]);
-
-  export type GuessValidation = {
-    valid: boolean,
-    error?: string,
-  };
 
   /** Creates a new game */
   export const newGame = (options?: {}): GameState => {
@@ -35,7 +36,7 @@ namespace Mathler {
       state.completed = true;
     }
 
-    state.guesses.push(guess);
+    state.guesses = [...state.guesses, guess];
 
     return {...state};
   }
@@ -48,14 +49,14 @@ namespace Mathler {
     if (guess.length !== 6) {
       return {
         valid: false,
-        error: 'Invalid input length'
+        error: GuessError.INPUT_LENGTH
       };
     }
 
     if (operators.has(guess[0]) || operators.has(guess[5])) {
       return {
         valid: false,
-        error: 'Guess cannot start or end with an operator'
+        error: GuessError.OPERATOR_START
       };
     }
 
@@ -69,12 +70,12 @@ namespace Mathler {
 
       return {
         valid: false,
-        error: 'Guess does not compute to ' + target
+        error: GuessError.BAD_COMPUTATION
       }
     } catch {
       return {
         valid: false,
-        error: 'Error in expression'
+        error: GuessError.DEFAULT
       };
     }
   }

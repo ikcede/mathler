@@ -13,6 +13,9 @@ export const keyboard = [
   ['Enter', '+', '-', '*', '/', 'Delete']
 ];
 
+/** Set of all valid keys */
+export const validKeys = new Set(keyboard.flat());
+
 /** Use a set to check for special keys */
 export const specialKeys = new Set([
   'Enter',

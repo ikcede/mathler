@@ -4,7 +4,8 @@ import React from 'react';
 import Mathler from '@/game/Mathler'
 import Keyboard from '@/components/mathler/keyboard/Keyboard';
 import Row from '@/components/mathler/row/Row';
-import { DisplayState, keyboard } from '@/components/mathler/util/constants';
+import Notification from '@/components/mathler/notification/Notification';
+import { DisplayState, keyboard, specialKeys, validKeys } from '@/components/mathler/util/constants';
 import styling from './Game.module.css';
 
 const Game: React.FC = () => {
@@ -13,6 +14,9 @@ const Game: React.FC = () => {
 
   /** Tracks the active temporary guess before successful submit */
   const [activeGuess, setActiveGuess] = React.useState('');
+
+  /** The error to be shown */
+  const [error, setError] = React.useState('');
 
   /**
    * Helper hash used to count present tiles in the case of multiple
@@ -57,15 +61,16 @@ const Game: React.FC = () => {
   /**
    * Delegates validation to the game engine and processes errors
    */
-  const validateGuess = React.useCallback(() => {
-    let validation = Mathler.validate(activeGuess, game.target);
-    console.log(validation);
+  const validateGuess = (guess: string, value: number) => {
+    let validation = Mathler.validate(guess, value);
+
     if (validation.valid) {
       return true;
     } else {
+      setError(validation.error || '');
       return false;
     }
-  }, [activeGuess, game]);
+  };
 
   /**
    * Main processor for key inputs
@@ -74,18 +79,20 @@ const Game: React.FC = () => {
    * handles special keys.
    */
   const onKeyInput = React.useCallback((key: string) => {
-    if (game.completed) {
+    if (game.completed || !validKeys.has(key)) {
       return;
     }
+    setError('');
 
-    if (key !== 'Enter' && 
-        key !== 'Delete' && 
-        activeGuess.length < game.solution.length) {
-      setActiveGuess(activeGuess + key);
-    } else if (key === 'Delete' && activeGuess.length > 0) {
+    if (!specialKeys.has(key)) {
+      setActiveGuess(activeGuess.length < game.solution.length ? 
+          activeGuess + '' + key :
+          activeGuess
+      );
+    } else if (key === 'Delete') {
       setActiveGuess(activeGuess.slice(0, activeGuess.length - 1));
     } else if (key === 'Enter') {
-      if (validateGuess()) {
+      if (validateGuess(activeGuess, game.target)) {
         setGame(Mathler.guess(activeGuess, game));
         setActiveGuess('');
       }
@@ -141,8 +148,27 @@ const Game: React.FC = () => {
     return displayStates;
   }, [game.guesses, game.solution]);
 
+  React.useEffect(() => {
+    const handleKeyUp = (e: KeyboardEvent) => {
+      const key = e.key;
+      if (key === 'Backspace') {
+        onKeyInput('Delete');
+      } else {
+        onKeyInput(key);
+      }
+    };
+    document.addEventListener('keyup', handleKeyUp, true);
+
+    return () => {
+      document.removeEventListener('keyup', handleKeyUp, true);
+    };
+  }, [onKeyInput]);
+
   return (
     <>
+      <div className={styling.instructions}>
+        Find the hidden calculation <mark>that equals {game.target}</mark>
+      </div>
       <div className={styling.tiles}>
         {Array.from({length: game.maxGuesses}).map((_item, index) => (
           <Row key={index}
@@ -153,6 +179,9 @@ const Game: React.FC = () => {
       <Keyboard keyboard={keyboard}
                 keyStates={keyStates}
                 onKeyInput={onKeyInput} />
+      {error.length > 0 &&
+        <Notification text={error} />
+      }
     </>
   )
 }

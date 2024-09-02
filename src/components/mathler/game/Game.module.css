@@ -3,5 +3,17 @@
   flex-direction: column;
   gap: 8px;
 
-  margin: 16px 0;
+  margin: 24px 0;
+}
+
+.instructions {
+  display: flex;
+  justify-content: center;
+}
+
+.instructions mark {
+  color: var(--color-white);
+  background: var(--color-yellow);
+  padding: 0 2px;
+  margin: 0 2px;
 }

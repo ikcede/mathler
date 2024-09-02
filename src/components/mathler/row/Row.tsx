@@ -4,28 +4,28 @@ import Tile from '@/components/mathler/tile/Tile';
 import { DisplayState } from '../util/constants';
 
 export interface RowProps {
-  /** Number of tiles in the row */
-  tiles: number,
-
-  /** Value of each tile, to be mapped by index of the character */
+  /** Value of each [Tile], to be mapped by index of the character */
   value: string,
 
-  /** The display states of each tile by index */
-  displayStates?: DisplayState[],
+  /** 
+   * The [DisplayState]s of each [Tile] by index
+   * 
+   * The array length also determines how many tiles to render
+   */
+  displayStates: DisplayState[],
 }
 
-/** View component for rendering a row of Tiles */
+/** View component for rendering a row of [Tile]s */
 const Row: React.FC<RowProps> = ({
-  tiles,
   value,
   displayStates = new Array<DisplayState>(),
 }) => {
   return (
     <div className={styling.row}>
-      {Array.from({length: tiles}).map((_item, index) => (
+      {displayStates.map((state, index) => (
         <Tile key={index}
               text={value[index]}
-              status={displayStates[index]} />
+              status={state} />
       ))}
     </div>
   )

@@ -7,23 +7,23 @@ import styling from './Keyboard.module.css';
 type KeyInputFunction = (key: string) => void;
 
 export interface KeyboardProps {
-  /** An array of keys to be rendered row by row */
+  /** A matrix of strings to be transformed into rows of [Key]s */
   keyboard: string[][],
 
-  /** A map of keys to their states */
+  /** A map of keys hashed by text to their states */
   keyStates?: Map<string, DisplayState>,
 
-  /** Called when one of the inner keys is pressed */
+  /** Called when one of the inner [Key]s is pressed */
   onKeyInput?: KeyInputFunction
 }
 
-/** View component for rendering a set of Keys */
+/** View component for rendering a set of [Key]s */
 const Keyboard: React.FC<KeyboardProps> = ({
   keyboard,
   keyStates = new Map<string, DisplayState>(),
   onKeyInput = () => {},
 }) => {
-  
+  /** Passes events from [Key] to the parent */
   const onKeyPressed = React.useCallback((key: string) => {
     onKeyInput(key);
   }, [onKeyInput]);

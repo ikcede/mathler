@@ -8,8 +8,8 @@ let rowProps: RowProps;
 describe('Row', () => {
   beforeEach(() => {
     rowProps = {
-      tiles: 2,
       value: '11',
+      displayStates: [DisplayState.DEFAULT, DisplayState.DEFAULT]
     };
   });
 
@@ -17,17 +17,17 @@ describe('Row', () => {
     render(<Row {...rowProps} />);
 
     let rows = screen.getAllByText('1');
-    expect(rows).toHaveLength(rowProps.tiles);
+    expect(rows).toHaveLength(2);
     expect(rows[0]).toHaveClass(styling[DisplayState.DEFAULT]);
     expect(rows[1]).toHaveClass(styling[DisplayState.DEFAULT]);
   });
 
-  it('renders with statuses', () => {
+  it('renders with different statuses', () => {
     rowProps.displayStates = [DisplayState.ABSENT, DisplayState.CORRECT];
     render(<Row {...rowProps} />);
 
     let rows = screen.getAllByText('1');
-    expect(rows).toHaveLength(rowProps.tiles);
+    expect(rows).toHaveLength(2);
     expect(rows[0]).toHaveClass(styling[DisplayState.ABSENT]);
     expect(rows[1]).toHaveClass(styling[DisplayState.CORRECT]);
   });

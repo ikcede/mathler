@@ -54,3 +54,40 @@ The main states I need to track are:
 - Target: A cached value that the player is trying to calculate
 - Solution: The solution expression
 - Completed: A boolean to quickly see if the game is over
+
+These would become the main variables of the [GameState](/src/components/game/GameState.ts) that I use to pass around specific instances of a game.
+
+**Pros**: 
+
+- Any one instance of a Game to be fully represented by a GameState
+- By not representation a temporary state (user input before a valid guess), I can avoid rerendering most components that depend on the game state
+- Game states can be saved and loaded, potentially for a puzzle mode
+
+**Cons**:
+
+- Since I'm storing guesses and the solution as strings, I might need to transform them into expressions for validation, which can be an expensive process
+- Needing to track the active row separately since I can't directly modify the guess string
+
+### Mathler.ts
+
+
+
+## FE Technical Design
+
+For the front-end game component, I focused on separating out each meaningful element of the view into small modular components.
+
+For the game, this led to the following components:
+
+- [Key](/src/components/mathler/key): Individual keys that the user can click
+- [Keyboard](/src/components/mathler/keyboard): Used to render lists of Keys and pass through click events from Keys to the parent Game
+- [Tile](/src/components/mathler/tile): An individual tile that reflected inputted keys
+- [Row](/src/components/mathler/row): A row of Tiles that passes through Tile values and display states
+- [Game](/src/components/mathler/game): The main view that controls all Tiles and Keys and their states 
+
+### Development Process
+
+Initially, I thought it could be helpful to have Rows figure out Tile display states, but after testing a quick implementation, I realized that to account for the requirement of allowing multiple occurences of the same number or operator would need me to rebuild a solution character hash every rerender. As a result, I abstracted out all the logic from the Key, Keyboard, Row, and Tile components to keep them view focused. 
+
+I also decided to shift some shared states and constants into [util/constants](/src/components/mathler/util/constants.ts) to keep the Game component cleaner and to share DisplayStates across view components.
+
+## Testing

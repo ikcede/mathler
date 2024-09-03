@@ -1,9 +1,9 @@
-/**
- * @jest-environment jsdom
- */
 import { render, screen } from "@testing-library/react";
 import Page from "./page";
 
-it("App Router: Works with Server Components", () => {
+it("Renders the page", () => {
   render(<Page />);
+
+  expect(screen.getByText('Mathler')).toBeInTheDocument();
+  expect(screen.getByRole('main')).not.toBeEmptyDOMElement();
 });

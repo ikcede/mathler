@@ -7,10 +7,21 @@ import Row from '@/components/mathler/row/Row';
 import Notification from '@/components/mathler/notification/Notification';
 import { DisplayState, keyboard, specialKeys, validKeys } from '@/components/mathler/util/constants';
 import styling from './Game.module.css';
+import GameState from '@/game/GameState';
 
-const Game: React.FC = () => {
+type GameCompletionFunction = (win: boolean) => void;
+
+export interface GameProps {
+  initialState: GameState,
+  onGameCompleted?: GameCompletionFunction,
+}
+
+const Game: React.FC<GameProps> = ({
+  initialState,
+  onGameCompleted = () => {}
+}) => {
   /** Tracks the active [GameState] */
-  const [game, setGame] = React.useState(Mathler.newGame());
+  const [game, setGame] = React.useState<GameState>(initialState);
 
   /** Tracks the active temporary guess before successful submit */
   const [activeGuess, setActiveGuess] = React.useState('');
@@ -149,7 +160,7 @@ const Game: React.FC = () => {
   }, [game.guesses, game.solution]);
 
   React.useEffect(() => {
-    const handleKeyUp = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       const key = e.key;
       if (key === 'Backspace') {
         onKeyInput('Delete');
@@ -157,10 +168,10 @@ const Game: React.FC = () => {
         onKeyInput(key);
       }
     };
-    document.addEventListener('keyup', handleKeyUp, true);
+    document.addEventListener('keydown', handleKeyDown, true);
 
     return () => {
-      document.removeEventListener('keyup', handleKeyUp, true);
+      document.removeEventListener('keydown', handleKeyDown, true);
     };
   }, [onKeyInput]);
 

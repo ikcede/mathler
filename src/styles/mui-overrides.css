@@ -1,0 +1,15 @@
+/** Popups */
+.MuiPaper-root.MuiPaper-elevation {
+  background: var(--color-background);
+  color: var(--color-white);
+  overflow: auto;
+}
+
+.MuiPaper-root.MuiDialog-paper {
+  animation: slit-in-horizontal 0.5s ease-out both;
+}
+
+/** Icons */
+.MuiSvgIcon-root {
+  color: var(--color-white);
+}

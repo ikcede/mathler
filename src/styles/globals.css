@@ -40,8 +40,33 @@ button {
   font-family: var(--font-roboto);
 }
 
-header, h1 {
+header, h1, h2, h3 {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0;
+}
+
+p, ul {
+  margin: 0;
+}
+
+ul {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@keyframes slit-in-horizontal {
+  0% {
+    transform: translateZ(-800px) rotateX(90deg);
+    opacity: 0;
+  }
+  54% {
+    transform: translateZ(-160px) rotateX(87deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateZ(0) rotateX(0);
+  }
 }

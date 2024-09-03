@@ -1,5 +1,8 @@
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
+ 
 import { Roboto } from "next/font/google";
 import '@/styles/globals.css';
+import '@/styles/mui-overrides.css';
 
 const roboto = Roboto({ 
   subsets: ['latin'],
@@ -19,7 +22,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={roboto.className}>
-        {children}
+        <AppRouterCacheProvider>
+          {children}
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

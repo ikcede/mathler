@@ -1,0 +1,41 @@
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.loader {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  border: var(--border);
+
+  animation: tile-flip 1.5s linear infinite alternate forwards;
+}
+
+@keyframes tile-flip {
+  0% {
+    transform: rotateX(0deg);
+    background: var(--color-background);
+    animation-timing-function: ease-in;
+  }
+
+  33% {
+    transform: rotateX(180deg);
+    background: var(--color-absent);
+    animation-timing-function: ease-in;
+  }
+
+  66% {
+    transform: rotateX(360deg);
+    background: var(--color-present);
+    animation-timing-function: ease-in;
+  }
+
+  100% {
+    transform: rotateX(540deg);
+    background: var(--color-correct);
+  }
+}

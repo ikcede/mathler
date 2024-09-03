@@ -24,3 +24,18 @@
 .tile.absent {
   background: var(--color-absent);
 }
+
+.text {
+  animation: scale-in 0.1s both;
+}
+
+@keyframes scale-in {
+  0% {
+    transform: scaleY(0);
+    transform-origin: 0% 100%;
+  }
+  100% {
+    transform: scaleY(1);
+    transform-origin: 0% 100%;
+  }
+}

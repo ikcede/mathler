@@ -17,7 +17,11 @@ const Tile: React.FC<TileProps> = ({
 }) => {
   return (
     <div className={`${styling.tile} ${styling[status]}`}>
-      {text}
+      {text !== '' && 
+        <div className={styling.text}>
+          {text}
+        </div>
+      }
     </div>
   )
 }

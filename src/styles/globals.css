@@ -57,6 +57,12 @@ ul {
   gap: 8px;
 }
 
+p, li {
+  line-height: 1.25em;
+  letter-spacing: -0.02px;
+  text-rendering: optimizeLegibility;
+}
+
 @keyframes slit-in-horizontal {
   0% {
     transform: translateZ(-800px) rotateX(90deg);

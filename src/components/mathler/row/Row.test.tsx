@@ -18,8 +18,10 @@ describe('Row', () => {
 
     let rows = screen.getAllByText('1');
     expect(rows).toHaveLength(2);
-    expect(rows[0]).toHaveClass(styling[DisplayState.DEFAULT]);
-    expect(rows[1]).toHaveClass(styling[DisplayState.DEFAULT]);
+    expect(rows[0].parentElement)
+        .toHaveClass(styling[DisplayState.DEFAULT]);
+    expect(rows[1].parentElement)
+        .toHaveClass(styling[DisplayState.DEFAULT]);
   });
 
   it('renders with different statuses', () => {
@@ -28,7 +30,9 @@ describe('Row', () => {
 
     let rows = screen.getAllByText('1');
     expect(rows).toHaveLength(2);
-    expect(rows[0]).toHaveClass(styling[DisplayState.ABSENT]);
-    expect(rows[1]).toHaveClass(styling[DisplayState.CORRECT]);
+    expect(rows[0].parentElement)
+        .toHaveClass(styling[DisplayState.ABSENT]);
+    expect(rows[1].parentElement)
+        .toHaveClass(styling[DisplayState.CORRECT]);
   });
 })

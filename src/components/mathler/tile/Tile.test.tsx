@@ -15,14 +15,14 @@ describe('Tile', () => {
   it('renders a tile with default styling', () => {
     render(<Tile {...tileProps} />);
     expect(screen.getByText('0')).toBeInTheDocument();
-    expect(screen.getByText('0'))
+    expect(screen.getByText('0').parentElement)
         .toHaveClass(styling[DisplayState.DEFAULT]);
   });
 
   it('renders with status', () => {
     tileProps.status = DisplayState.ABSENT;
     render(<Tile {...tileProps} />);
-    expect(screen.getByText('0'))
+    expect(screen.getByText('0').parentElement)
         .toHaveClass(styling[DisplayState.ABSENT]);
   });
 })

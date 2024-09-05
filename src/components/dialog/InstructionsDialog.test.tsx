@@ -1,34 +1,35 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import InstructionsDialog, { InstructionsDialogProps } from "./InstructionsDialog";
+import { fireEvent, render, screen } from '@testing-library/react';
+import InstructionsDialog from './InstructionsDialog';
+import DialogProps from './DialogProps';
 
-let instructionsDialogProps: InstructionsDialogProps;
+let dialogProps: DialogProps;
 
 describe('InstructionsDialog', () => {
   beforeEach(() => {
-    instructionsDialogProps = {
+    dialogProps = {
       open: false,
-      onClose: jest.fn()
+      onClose: jest.fn(),
     };
   });
 
   it('renders closed', () => {
-    render(<InstructionsDialog {...instructionsDialogProps} />);
+    render(<InstructionsDialog {...dialogProps} />);
     expect(screen.queryAllByRole('dialog')).toHaveLength(0);
   });
 
   it('renders open', () => {
-    instructionsDialogProps.open = true;
-    render(<InstructionsDialog {...instructionsDialogProps} />);
+    dialogProps.open = true;
+    render(<InstructionsDialog {...dialogProps} />);
     expect(screen.getByText('How To Play')).toBeInTheDocument();
     expect(screen.getByTestId('CloseIcon')).toBeInTheDocument();
   });
 
   it('closes on X click', () => {
-    instructionsDialogProps.open = true;
-    render(<InstructionsDialog {...instructionsDialogProps} />);
+    dialogProps.open = true;
+    render(<InstructionsDialog {...dialogProps} />);
 
-    expect(instructionsDialogProps.onClose).toHaveBeenCalledTimes(0);
+    expect(dialogProps.onClose).toHaveBeenCalledTimes(0);
     fireEvent.click(screen.getAllByRole('button')[0]);
-    expect(instructionsDialogProps.onClose).toHaveBeenCalledTimes(1);
+    expect(dialogProps.onClose).toHaveBeenCalledTimes(1);
   });
-})
+});

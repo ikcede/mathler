@@ -1,4 +1,4 @@
-import GameWrapper from "@/components/game-wrapper/GameWrapper";
+import GameWrapper from '@/components/game-wrapper/GameWrapper';
 import styling from './page.module.css';
 
 export default function Page() {
@@ -11,5 +11,5 @@ export default function Page() {
         <GameWrapper />
       </main>
     </div>
-  )
+  );
 }

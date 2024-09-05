@@ -1,6 +1,6 @@
 export type GuessValidation = {
-  valid: boolean,
-  error?: GuessError,
+  valid: boolean;
+  error?: GuessError;
 };
 
 export enum GuessError {

@@ -4,7 +4,7 @@ import { DisplayState } from '../util/constants';
 
 export interface TileProps {
   /** Text of the tile, or empty if not set */
-  text?: string,
+  text?: string;
 
   /** [DisplayState] of a tile, defaulting to DisplayState.DEFAULT */
   status?: DisplayState;
@@ -17,13 +17,9 @@ const Tile: React.FC<TileProps> = ({
 }) => {
   return (
     <div className={`${styling.tile} ${styling[status]}`}>
-      {text !== '' && 
-        <div className={styling.text}>
-          {text}
-        </div>
-      }
+      {text !== '' && <div className={styling.text}>{text}</div>}
     </div>
-  )
-}
+  );
+};
 
-export default React.memo(Tile)
+export default React.memo(Tile);

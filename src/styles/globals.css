@@ -1,14 +1,14 @@
 :root {
-  --color-green: #477A43;
-  --color-yellow: #83732A;
-  --color-red: #B71E1E;
+  --color-green: #477a43;
+  --color-yellow: #83732a;
+  --color-red: #b71e1e;
 
-  --color-white: #FAFAFA;
+  --color-white: #fafafa;
   --color-black: #121213;
 
-  --color-grey-800: #3A3A3C;
+  --color-grey-800: #3a3a3c;
   --color-grey-700: #727274;
-  --color-grey-hover: #4F4F51;
+  --color-grey-hover: #4f4f51;
 
   --color-correct: var(--color-green);
   --color-present: var(--color-yellow);
@@ -40,14 +40,18 @@ button {
   font-family: var(--font-roboto);
 }
 
-header, h1, h2, h3 {
+header,
+h1,
+h2,
+h3 {
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0;
 }
 
-p, ul {
+p,
+ul {
   margin: 0;
 }
 
@@ -57,7 +61,8 @@ ul {
   gap: 8px;
 }
 
-p, li {
+p,
+li {
   line-height: 1.25em;
   letter-spacing: -0.02px;
   text-rendering: optimizeLegibility;

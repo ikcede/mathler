@@ -2,8 +2,8 @@ import React from 'react';
 import styling from './Notification.module.css';
 
 export interface NotificationProps {
-  text: string,
-  type?: 'error' | 'success'
+  text: string;
+  type?: 'error' | 'success';
 }
 
 const Notification: React.FC<NotificationProps> = ({
@@ -22,17 +22,19 @@ const Notification: React.FC<NotificationProps> = ({
 
     return () => {
       clearTimeout(timeoutId);
-    }
+    };
   }, []);
 
   return (
     <div className={styling.wrapper + ' ' + (show ? styling.show : '')}>
-      <div className={`${styling.notification} ${styling[type]}`}
-           role='alert'>
+      <div
+        className={`${styling.notification} ${styling[type]}`}
+        role="alert"
+      >
         {text}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Notification
+export default Notification;

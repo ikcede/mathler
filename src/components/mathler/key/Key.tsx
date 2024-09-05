@@ -6,27 +6,29 @@ type KeyPressedFunction = (key: string) => void;
 
 export interface KeyProps {
   /** String value that this key represents */
-  keyText: string,
+  keyText: string;
 
   /** Whether the value is absent from the current Mathler solution */
-  display?: DisplayState,
+  display?: DisplayState;
 
   /** Called when the key is clicked */
-  onKeyPressed?: KeyPressedFunction
+  onKeyPressed?: KeyPressedFunction;
 }
 
 /** View component for rendering a single key */
 const Key: React.FC<KeyProps> = ({
   keyText,
   display = DisplayState.DEFAULT,
-  onKeyPressed = () => {}
+  onKeyPressed = () => {},
 }) => {
   return (
-    <button className={styling.key + ' ' + styling[display]}
-            onClick={() => onKeyPressed(keyText)}>
+    <button
+      className={styling.key + ' ' + styling[display]}
+      onClick={() => onKeyPressed(keyText)}
+    >
       {keyText}
     </button>
-  )
-}
+  );
+};
 
-export default React.memo(Key)
+export default React.memo(Key);

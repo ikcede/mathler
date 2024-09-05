@@ -1,3 +1,1 @@
-export const operators = new Set<string>([
-  '+', '-', '*', '/'
-]);
+export const operators = new Set<string>(['+', '-', '*', '/']);

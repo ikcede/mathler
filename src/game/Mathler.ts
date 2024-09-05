@@ -12,10 +12,10 @@ namespace Mathler {
   export import operators = constants.operators;
 
   export interface GameOptions {
-    maxGuesses?: number,
-    solution?: string,
-    generator?: string,
-    seed?: number,
+    maxGuesses?: number;
+    solution?: string;
+    generator?: string;
+    seed?: number;
   }
 
   /** Creates a new game */
@@ -25,7 +25,7 @@ namespace Mathler {
       maxGuesses: options?.maxGuesses ?? 6,
       target: 15,
       solution: '12+3*1',
-      completed: false
+      completed: false,
     };
 
     if (options !== undefined && options.solution !== undefined) {
@@ -44,10 +44,12 @@ namespace Mathler {
     });
   };
 
-  /** Guess an expression */
+  /** Guess an expression and return the updated state */
   export const guess = (guess: string, state: GameState): GameState => {
-    if (state.completed === true || 
-        state.guesses.length == state.maxGuesses) {
+    if (
+      state.completed === true ||
+      state.guesses.length == state.maxGuesses
+    ) {
       return state;
     }
 
@@ -56,7 +58,10 @@ namespace Mathler {
     } else {
       // Check for commutative
       let simplified = guess.split('').toSorted().join('');
-      let simplifiedSolution = state.solution.split('').toSorted().join('');
+      let simplifiedSolution = state.solution
+        .split('')
+        .toSorted()
+        .join('');
       if (simplified === simplifiedSolution) {
         guess = state.solution;
         state.completed = true;
@@ -65,47 +70,47 @@ namespace Mathler {
 
     state.guesses = [...state.guesses, guess];
 
-    return {...state};
-  }
+    return { ...state };
+  };
 
-  /** Validate an expression */
+  /** Validate an expression based on a [GameState] */
   export const validate = (
     guess: string,
-    target: number
+    gameState: GameState
   ): GuessValidation => {
-    if (guess.length !== 6) {
+    if (guess.length !== gameState.solution.length) {
       return {
         valid: false,
-        error: GuessError.INPUT_LENGTH
+        error: GuessError.INPUT_LENGTH,
       };
     }
 
     if (operators.has(guess[0]) || operators.has(guess[5])) {
       return {
         valid: false,
-        error: GuessError.OPERATOR_START
+        error: GuessError.OPERATOR_START,
       };
     }
 
     try {
       let value = evaluate(guess);
-      if (value === target) {
+      if (value === gameState.target) {
         return {
-          valid: true
+          valid: true,
         };
       }
 
       return {
         valid: false,
-        error: GuessError.BAD_COMPUTATION
-      }
+        error: GuessError.BAD_COMPUTATION,
+      };
     } catch {
       return {
         valid: false,
-        error: GuessError.DEFAULT
+        error: GuessError.DEFAULT,
       };
     }
-  }
+  };
 }
 
 export default Mathler;

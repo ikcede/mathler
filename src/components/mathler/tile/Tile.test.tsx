@@ -1,7 +1,7 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen } from '@testing-library/react';
 import Tile, { TileProps } from './Tile';
 import styling from './Key.module.css';
-import { DisplayState } from "../util/constants";
+import { DisplayState } from '../util/constants';
 
 let tileProps: TileProps;
 
@@ -15,14 +15,16 @@ describe('Tile', () => {
   it('renders a tile with default styling', () => {
     render(<Tile {...tileProps} />);
     expect(screen.getByText('0')).toBeInTheDocument();
-    expect(screen.getByText('0').parentElement)
-        .toHaveClass(styling[DisplayState.DEFAULT]);
+    expect(screen.getByText('0').parentElement).toHaveClass(
+      styling[DisplayState.DEFAULT]
+    );
   });
 
   it('renders with status', () => {
     tileProps.status = DisplayState.ABSENT;
     render(<Tile {...tileProps} />);
-    expect(screen.getByText('0').parentElement)
-        .toHaveClass(styling[DisplayState.ABSENT]);
+    expect(screen.getByText('0').parentElement).toHaveClass(
+      styling[DisplayState.ABSENT]
+    );
   });
-})
+});

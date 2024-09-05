@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
+import { SnackbarProvider, enqueueSnackbar } from 'notistack';
 import Mathler from '@/game/Mathler';
 import Keyboard from '@/components/mathler/keyboard/Keyboard';
 import Row from '@/components/mathler/row/Row';
-import Notification from '@/components/mathler/notification/Notification';
 import {
   DisplayState,
   keyboard,
@@ -14,25 +14,16 @@ import {
 import styling from './Game.module.css';
 import GameState from '@/game/GameState';
 
-type GameCompletionFunction = (win: boolean) => void;
-
 export interface GameProps {
   initialState: GameState;
-  onGameCompleted?: GameCompletionFunction;
 }
 
-const Game: React.FC<GameProps> = ({
-  initialState,
-  onGameCompleted = () => {},
-}) => {
+const Game: React.FC<GameProps> = ({ initialState }) => {
   /** Tracks the active [GameState] */
   const [game, setGame] = React.useState<GameState>(initialState);
 
   /** Tracks the active temporary guess before successful submit */
   const [activeGuess, setActiveGuess] = React.useState('');
-
-  /** The error to be shown */
-  const [error, setError] = React.useState('');
 
   /**
    * Helper hash used to count present tiles in the case of multiple
@@ -83,7 +74,7 @@ const Game: React.FC<GameProps> = ({
     if (validation.valid) {
       return true;
     } else {
-      setError(validation.error || '');
+      enqueueSnackbar(validation.error, { variant: 'error' });
       return false;
     }
   };
@@ -99,7 +90,6 @@ const Game: React.FC<GameProps> = ({
       if (game.completed || !validKeys.has(key)) {
         return;
       }
-      setError('');
 
       if (!specialKeys.has(key)) {
         setActiveGuess(
@@ -111,8 +101,21 @@ const Game: React.FC<GameProps> = ({
         setActiveGuess(activeGuess.slice(0, activeGuess.length - 1));
       } else if (key === 'Enter') {
         if (validateGuess(activeGuess, game)) {
-          setGame(Mathler.guess(activeGuess, game));
+          let newGameState = Mathler.guess(activeGuess, game);
+          setGame(newGameState);
           setActiveGuess('');
+
+          if (newGameState.completed) {
+            if (Mathler.isGameWon(newGameState)) {
+              enqueueSnackbar('Congrats, you found the solution!', {
+                variant: 'success',
+              });
+            } else {
+              enqueueSnackbar('Sorry, you ran out of guesses', {
+                variant: 'error',
+              });
+            }
+          }
         }
       }
     },
@@ -188,6 +191,12 @@ const Game: React.FC<GameProps> = ({
     };
   }, [onKeyInput]);
 
+  /** Reset the game when needed */
+  React.useEffect(() => {
+    setGame(initialState);
+    setActiveGuess('');
+  }, [initialState]);
+
   return (
     <>
       <div className={styling.instructions}>
@@ -207,7 +216,12 @@ const Game: React.FC<GameProps> = ({
         keyStates={keyStates}
         onKeyInput={onKeyInput}
       />
-      {error.length > 0 && <Notification text={error} />}
+      <SnackbarProvider
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      />
     </>
   );
 };

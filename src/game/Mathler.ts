@@ -9,34 +9,32 @@ namespace Mathler {
   // Declare imported util
   export type GuessValidation = validation.GuessValidation;
   export import GuessError = validation.GuessError;
+  export import GeneratorType = constants.GeneratorType;
   export import operators = constants.operators;
 
   export interface GameOptions {
     maxGuesses?: number;
     solution?: string;
-    generator?: string;
-    seed?: number;
+    generator?: constants.GeneratorType;
   }
 
   /** Creates a new game */
   export const newGame = (options?: GameOptions): GameState => {
-    const newGameState: GameState = {
-      guesses: [],
-      maxGuesses: options?.maxGuesses ?? 6,
-      target: 15,
-      solution: '12+3*1',
-      completed: false,
-    };
+    let newGameState = { ...constants.defaultNewGame };
 
-    if (options !== undefined && options.solution !== undefined) {
-      return Object.assign(newGameState, {
-        solution: options.solution,
-        target: evaluate(options.solution),
-      });
+    if (options !== undefined) {
+      if (options.maxGuesses !== undefined) {
+        newGameState.maxGuesses = options.maxGuesses;
+      }
+      if (options.solution !== undefined) {
+        newGameState.solution = options.solution;
+        newGameState.target = evaluate(options.solution);
+        return newGameState;
+      }
     }
 
-    let generator = options?.generator ?? 'random';
-    let solution = generateExpression(generator, options?.seed);
+    let generator = options?.generator ?? constants.GeneratorType.RANDOM;
+    let solution = generateExpression(generator);
 
     return Object.assign(newGameState, {
       solution: solution,
@@ -48,7 +46,7 @@ namespace Mathler {
   export const guess = (guess: string, state: GameState): GameState => {
     if (
       state.completed === true ||
-      state.guesses.length == state.maxGuesses
+      state.guesses.length >= state.maxGuesses
     ) {
       return state;
     }
@@ -70,6 +68,10 @@ namespace Mathler {
 
     state.guesses = [...state.guesses, guess];
 
+    if (state.guesses.length == state.maxGuesses) {
+      state.completed = true;
+    }
+
     return { ...state };
   };
 
@@ -85,7 +87,10 @@ namespace Mathler {
       };
     }
 
-    if (operators.has(guess[0]) || operators.has(guess[5])) {
+    if (
+      operators.has(guess[0]) ||
+      operators.has(guess[guess.length - 1])
+    ) {
       return {
         valid: false,
         error: GuessError.OPERATOR_START,
@@ -110,6 +115,14 @@ namespace Mathler {
         error: GuessError.DEFAULT,
       };
     }
+  };
+
+  /** Checks if a gamestate is won */
+  export const isGameWon = (state: GameState) => {
+    if (state.completed == false || state.guesses.length == 0) {
+      return false;
+    }
+    return state.guesses[state.guesses.length - 1] === state.solution;
   };
 }
 

@@ -1,4 +1,4 @@
-/** Popups */
+/* Popups */
 .MuiPaper-root.MuiPaper-elevation {
   background: var(--color-background);
   color: var(--color-white);
@@ -9,7 +9,30 @@
   animation: slit-in-horizontal 0.5s ease-out both;
 }
 
-/** Icons */
+.notistack-Snackbar .notistack-MuiContent-error {
+  color: var(--color-white);
+  border-left: 3px solid var(--color-red);
+  background: var(--color-grey-800);
+  border-radius: 0px;
+}
+
+.notistack-Snackbar .notistack-MuiContent-success {
+  color: var(--color-white);
+  border-left: 3px solid var(--color-green);
+  background: var(--color-grey-800);
+  border-radius: 0px;
+}
+
+/* Icons */
 .MuiSvgIcon-root {
   color: var(--color-white);
+}
+
+/* Buttons */
+.MuiButtonBase-root.MuiButton-root {
+  color: var(--color-white);
+}
+
+.MuiButtonBase-root.MuiButton-root:hover {
+  background: var(--color-grey-800);
 }

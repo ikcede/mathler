@@ -7,24 +7,29 @@ import Mathler from '@/game/Mathler';
 import GameControls from '../game-controls/GameControls';
 import Loading from '@/components/loading/Loading';
 import Button from '@mui/material/Button';
+import styling from './GameWrapper.module.css';
 
 const GameWrapper: React.FC = () => {
   const [game, setGame] = React.useState<GameState | null>(null);
 
-  const startNewGame = React.useCallback((e: React.MouseEvent) => {
+  /** Generates a random GameState */
+  const startNewGame = () =>
     setGame(
       Mathler.newGame({
-        generator: 'test',
+        generator: Mathler.GeneratorType.RANDOM,
       })
     );
-  }, []);
+
+  /** Memoized handler for the new game button */
+  const onNewGameClick = React.useCallback(
+    (e: React.MouseEvent) => {
+      startNewGame();
+    },
+    [startNewGame]
+  );
 
   React.useEffect(() => {
-    setGame(
-      Mathler.newGame({
-        generator: 'test',
-      })
-    );
+    startNewGame();
   }, []);
 
   return (
@@ -34,7 +39,9 @@ const GameWrapper: React.FC = () => {
       {game !== null && (
         <>
           <Game initialState={game} />
-          <Button onClick={startNewGame}>New Game</Button>
+          <div className={styling.reset}>
+            <Button onClick={onNewGameClick}>Start A New Game</Button>
+          </div>
         </>
       )}
     </>

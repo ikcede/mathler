@@ -12,7 +12,6 @@ describe('Keyboard', () => {
   beforeEach(() => {
     keyboardProps = {
       keyboard: [['0'], ['Enter']],
-      onKeyInput: jest.fn(),
     };
   });
 
@@ -44,7 +43,7 @@ describe('Keyboard', () => {
   });
 
   it('sends a keyinput event', async () => {
-    let onKeyInput = keyboardProps.onKeyInput;
+    let onKeyInput = (keyboardProps.onKeyInput = jest.fn());
     render(<Keyboard {...keyboardProps} />);
 
     let keys = screen.getAllByRole('button');
@@ -57,5 +56,12 @@ describe('Keyboard', () => {
     await user.click(keys[1]);
     expect(onKeyInput).toHaveBeenCalledTimes(2);
     expect(onKeyInput).toHaveBeenCalledWith('Enter');
+  });
+
+  it('handles default keyInput with no errors', async () => {
+    render(<Keyboard {...keyboardProps} />);
+
+    let keys = screen.getAllByRole('button');
+    await user.click(keys[0]);
   });
 });

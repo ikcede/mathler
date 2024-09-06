@@ -12,7 +12,6 @@ describe('Key', () => {
   beforeEach(() => {
     keyProps = {
       keyText: '0',
-      onKeyPressed: jest.fn(),
     };
   });
 
@@ -33,7 +32,7 @@ describe('Key', () => {
   });
 
   it('sends a keypress event', async () => {
-    let onKeyPressed = keyProps.onKeyPressed;
+    let onKeyPressed = (keyProps.onKeyPressed = jest.fn());
     render(<Key {...keyProps} />);
 
     expect(onKeyPressed).toHaveBeenCalledTimes(0);
@@ -41,5 +40,13 @@ describe('Key', () => {
 
     expect(onKeyPressed).toHaveBeenCalledTimes(1);
     expect(onKeyPressed).toHaveBeenCalledWith(keyProps.keyText);
+  });
+
+  it('handles the default onKeyPressed without errors', async () => {
+    render(<Key {...keyProps} />);
+    const button = screen.getByRole('button');
+
+    await user.click(screen.getByRole('button'));
+    // No assertion needed, just ensuring no error occurs
   });
 });

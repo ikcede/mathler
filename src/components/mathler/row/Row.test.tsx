@@ -1,42 +1,48 @@
 import { render, screen } from '@testing-library/react';
 import Row, { RowProps } from './Row';
-import styling from './Key.module.css';
 import { DisplayState } from '../util/constants';
+import Tile from '@/components/mathler/tile/Tile';
 
-let rowProps: RowProps;
+jest.mock('@/components/mathler/tile/Tile', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
 
 describe('Row', () => {
+  let rowProps: RowProps;
+
   beforeEach(() => {
+    jest.clearAllMocks();
+
     rowProps = {
-      value: '11',
-      displayStates: [DisplayState.DEFAULT, DisplayState.DEFAULT],
+      value: '12',
+      displayStates: [DisplayState.DEFAULT, DisplayState.ABSENT],
     };
   });
 
-  it('renders a row with default styling', () => {
+  it('renders a row with correct styling', () => {
     render(<Row {...rowProps} />);
 
-    let rows = screen.getAllByText('1');
-    expect(rows).toHaveLength(2);
-    expect(rows[0].parentElement).toHaveClass(
-      styling[DisplayState.DEFAULT]
+    expect(Tile).toHaveBeenCalledTimes(2);
+    expect(Tile).toHaveBeenCalledWith(
+      expect.objectContaining({
+        text: '1',
+        status: DisplayState.DEFAULT,
+      }),
+      expect.anything()
     );
-    expect(rows[1].parentElement).toHaveClass(
-      styling[DisplayState.DEFAULT]
+    expect(Tile).toHaveBeenCalledWith(
+      expect.objectContaining({
+        text: '2',
+        status: DisplayState.ABSENT,
+      }),
+      expect.anything()
     );
   });
 
-  it('renders with different statuses', () => {
-    rowProps.displayStates = [DisplayState.ABSENT, DisplayState.CORRECT];
+  it('renders based on number of display states', () => {
+    rowProps.displayStates = [];
     render(<Row {...rowProps} />);
-
-    let rows = screen.getAllByText('1');
-    expect(rows).toHaveLength(2);
-    expect(rows[0].parentElement).toHaveClass(
-      styling[DisplayState.ABSENT]
-    );
-    expect(rows[1].parentElement).toHaveClass(
-      styling[DisplayState.CORRECT]
-    );
+    expect(Tile).toHaveBeenCalledTimes(0);
   });
 });

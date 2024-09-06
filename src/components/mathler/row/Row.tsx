@@ -16,10 +16,7 @@ export interface RowProps {
 }
 
 /** View component for rendering a row of [Tile]s */
-const Row: React.FC<RowProps> = ({
-  value,
-  displayStates = new Array<DisplayState>(),
-}) => {
+const Row: React.FC<RowProps> = ({ value, displayStates }) => {
   return (
     <div className={styling.row}>
       {displayStates.map((state, index) => (

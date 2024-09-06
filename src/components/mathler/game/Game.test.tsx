@@ -8,6 +8,8 @@ import {
   DisplayState,
   keyboard,
 } from '@/components/mathler/util/constants';
+import { enqueueSnackbar } from 'notistack';
+import { GuessError } from '@/game/util/validation';
 
 const newGameState: GameState = {
   guesses: [],
@@ -46,7 +48,10 @@ jest.mock('@/components/mathler/keyboard/Keyboard', () => ({
 }));
 
 /** Mock notification snackbar */
-jest.mock('notistack');
+jest.mock('notistack', () => ({
+  ...jest.requireActual('notistack'),
+  enqueueSnackbar: jest.fn(),
+}));
 
 describe('Game', () => {
   let gameProps: GameProps;
@@ -272,5 +277,171 @@ describe('Game', () => {
     );
   });
 
-  
+  it('will show errors if guess does not pass validation', async () => {
+    gameProps.initialState = middleGameState;
+    render(<Game {...gameProps} />);
+
+    await user.keyboard('{Enter}');
+    expect(enqueueSnackbar).toHaveBeenCalledWith(
+      GuessError.INPUT_LENGTH,
+      expect.objectContaining({
+        variant: 'error',
+      })
+    );
+  });
+
+  it('will update the active guess on key input', async () => {
+    gameProps.initialState = middleGameState;
+    render(<Game {...gameProps} />);
+
+    expect(Row).toHaveBeenCalledTimes(3);
+    await user.keyboard('1');
+    expect(Row).toHaveBeenCalledTimes(6);
+    expect(Row).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: '1',
+        displayStates: new Array(newGameState.solution.length).fill(
+          DisplayState.DEFAULT
+        ),
+      }),
+      expect.anything()
+    );
+  });
+
+  it('will not update the active guess on max input', async () => {
+    gameProps.initialState = middleGameState;
+    render(<Game {...gameProps} />);
+
+    expect(Row).toHaveBeenCalledTimes(3);
+    await user.keyboard('12345');
+    expect(Row).toHaveBeenCalledTimes(3 * 6);
+
+    await user.keyboard('1');
+    expect(Row).toHaveBeenCalledTimes(3 * 6);
+  });
+
+  it('can delete the last tile', async () => {
+    gameProps.initialState = middleGameState;
+    render(<Game {...gameProps} />);
+
+    await user.keyboard('12');
+    jest.clearAllMocks();
+
+    expect(Row).toHaveBeenCalledTimes(0);
+    await user.keyboard('{Backspace}');
+
+    expect(Row).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: '1',
+        displayStates: new Array(newGameState.solution.length).fill(
+          DisplayState.DEFAULT
+        ),
+      }),
+      expect.anything()
+    );
+  });
+
+  it('can make a guess', async () => {
+    gameProps.initialState = middleGameState;
+    render(<Game {...gameProps} />);
+
+    await user.keyboard('3/3+2');
+    jest.clearAllMocks();
+
+    await user.keyboard('{Enter}');
+    expect(Row).toHaveBeenCalledTimes(3);
+    expect(Row).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: '3/3+2',
+        displayStates: [
+          DisplayState.ABSENT,
+          DisplayState.ABSENT,
+          DisplayState.ABSENT,
+          DisplayState.CORRECT,
+          DisplayState.ABSENT,
+        ],
+      }),
+      expect.anything()
+    );
+
+    // Keyboard values should be updated too
+    let expectedKeyMap = new Map<string, string>();
+    expectedKeyMap.set('3', DisplayState.ABSENT);
+    expectedKeyMap.set('/', DisplayState.ABSENT);
+    expectedKeyMap.set('2', DisplayState.ABSENT);
+    expectedKeyMap.set('+', DisplayState.CORRECT);
+
+    expect(Keyboard).toHaveBeenCalledWith(
+      expect.objectContaining({
+        keyboard: keyboard,
+        keyStates: expectedKeyMap,
+        onKeyInput: expect.anything(),
+      }),
+      expect.anything()
+    );
+  });
+
+  it('can win the game', async () => {
+    gameProps.initialState = newGameState;
+    render(<Game {...gameProps} />);
+
+    await user.keyboard('1+1+1');
+    jest.clearAllMocks();
+
+    await user.keyboard('{Enter}');
+    expect(Row).toHaveBeenCalledTimes(3);
+    expect(Row).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: '1+1+1',
+        displayStates: [
+          DisplayState.CORRECT,
+          DisplayState.CORRECT,
+          DisplayState.CORRECT,
+          DisplayState.CORRECT,
+          DisplayState.CORRECT,
+        ],
+      }),
+      expect.anything()
+    );
+
+    // Win notification should show
+    expect(enqueueSnackbar).toHaveBeenCalledWith(
+      'Congrats, you found the solution!',
+      expect.objectContaining({
+        variant: 'success',
+      })
+    );
+
+    // Keyboard values should be updated too
+    let expectedKeyMap = new Map<string, string>();
+    expectedKeyMap.set('1', DisplayState.CORRECT);
+    expectedKeyMap.set('+', DisplayState.CORRECT);
+
+    expect(Keyboard).toHaveBeenCalledWith(
+      expect.objectContaining({
+        keyboard: keyboard,
+        keyStates: expectedKeyMap,
+        onKeyInput: expect.anything(),
+      }),
+      expect.anything()
+    );
+  });
+
+  it('can lose the game', async () => {
+    gameProps.initialState = middleGameState;
+    render(<Game {...gameProps} />);
+
+    await user.keyboard('4-2+1');
+    await user.keyboard('{Enter}');
+    await user.keyboard('4-2+1');
+    await user.keyboard('{Enter}');
+
+    // Lose notification should show
+    expect(enqueueSnackbar).toHaveBeenCalledWith(
+      'Sorry, you ran out of guesses',
+      expect.objectContaining({
+        variant: 'error',
+      })
+    );
+  });
 });
